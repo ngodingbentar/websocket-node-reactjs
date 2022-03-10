@@ -7,6 +7,7 @@ import './index.css'
 
 const { Search } = Input;
 const { Text } = Typography;
+const { Meta } = Card;
 
 const client = new W3CWebSocket('ws://127.0.0.1:8000');
 export default class App extends Component {
@@ -21,6 +22,7 @@ export default class App extends Component {
     client.send(JSON.stringify({
       type: "message",
       msg: value,
+      user: this.state.userName,
     }));
     this.setState({ searchVal: '' })
   }
@@ -57,6 +59,21 @@ export default class App extends Component {
           <div className='title'>
             <Text id="main-heading" type="secondary" style={{ fontSize: '36px' }}>Websocket Chat: </Text>
           </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 50 }} id="messages">
+            {this.state.messages.map(message => 
+              <Card key={message.msg} style={{ width: 300, margin: '16px 4px 0 4px', alignSelf: this.state.userName === message.user ? 'flex-end' : 'flex-start' }} loading={false}>
+                <Meta
+                  avatar={
+                    <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{message.user[0].toUpperCase()}</Avatar>
+                  }
+                  title={message.user+":"}
+                  description={message.msg}
+                />
+              </Card> 
+            )}
+          </div>
+
           <div className="bottom">
             <Search
               placeholder="input message and send"
